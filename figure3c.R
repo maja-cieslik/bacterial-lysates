@@ -3,7 +3,7 @@
 # Author: Maja Cieslik
 # Date: June 2025
 # Copyright (c) 2025 Maja Cieslik
-# Licensed under the MIT License. See LICENSE file for details.
+# Licensed under the GNU General Public License v3.0 (GPL-3.0). See LICENSE file for details.
 
 library(ggplot2)
 library(dplyr)
