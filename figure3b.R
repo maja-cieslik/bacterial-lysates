@@ -4,18 +4,15 @@
 # Date: June 2025
 # Copyright (c) 2025 Maja Cieslik
 # Licensed under the GNU General Public License v3.0 (GPL-3.0). See LICENSE file for details.
-
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(scales)
-
 col_lancet <- c(
-  "Beta-lactams"      = "#F1E0D9",  
+  "Beta-lactams"      = "#E8CBDD",  
   "Macrolides"        = "#DEE1E9",  
-  "Other Antibiotics" = "#E8CBDD"   
+  "Other Antibiotics" = "#F1E0D9"   
 )
-
 data <- data.frame(
   adoption_rate = factor(c("25%", "50%", "75%", "100%"), 
                          levels = c("25%", "50%", "75%", "100%")),
@@ -26,7 +23,6 @@ data <- data.frame(
   upper_ci          = c(5370608, 10741216, 16111825, 21482433),
   total             = c(3807520, 7615042, 11422563, 15230083)
 )
-
 # Long format & factor order (unchanged) ----------------------------------
 data_long <- data %>% 
   pivot_longer(
@@ -37,16 +33,14 @@ data_long <- data %>%
   mutate(
     antibiotic_class = factor(
       antibiotic_class,
-      levels = c("other_antibiotics", "macrolides", "beta_lactams"),   # order → colour order
+      levels = c("other_antibiotics", "macrolides", "beta_lactams"),   # reversed for stacking order
       labels = c("Other Antibiotics", "Macrolides", "Beta-lactams")
     )
   )
-
 # Millions formatter ------------------------------------------------------
 format_in_millions <- function(x) {
   paste0(format(round(x / 1e6, 1), nsmall = 1), "M")
 }
-
 # Create annotation data for totals ---------------------------------------
 annotation_data <- data %>%
   select(adoption_rate, total) %>%
@@ -55,7 +49,6 @@ annotation_data <- data %>%
     # Position labels slightly above the bars
     y_position = total + (total * 0.05)  # 5% above the total height
   )
-
 # Plot --------------------------------------------------------------------
 ggplot(data_long,
        aes(x = adoption_rate, y = courses_avoided, fill = antibiotic_class)) +
@@ -78,6 +71,7 @@ ggplot(data_long,
     colour = "black"     # Text color
   ) +
   scale_fill_manual(values = col_lancet) +      # Lancet colours
+  guides(fill = guide_legend(reverse = TRUE)) +  # Reverse legend order
   scale_y_continuous(
     labels = format_in_millions,
     expand = expansion(mult = c(0, 0.15))  # Increased top expansion to accommodate labels
